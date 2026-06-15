@@ -1,0 +1,73 @@
+name: Credit Card Fraud Detection CI/CD
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run EDA Notebook (smoke test)
+        run: |
+          pip install nbconvert jupyter
+          jupyter nbconvert --to script 01_eda.ipynb --output eda_script
+          python eda_script.py
+
+      - name: Train and validate model
+        run: |
+          python train.py
+
+      - name: Run tests
+        run: |
+          pip install pytest
+          pytest tests/ --verbose
+
+      - name: Check model artifact exists
+        run: |
+          if [ -f "fraud_detection_model.pkl" ]; then
+            echo "Model artifact found!"
+          else
+            echo "Model artifact missing!" && exit 1
+          fi
+
+      - name: Upload model artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: fraud-detection-model
+          path: fraud_detection_model.pkl
+
+  deploy:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Download model artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: fraud-detection-model
+
+      - name: Deploy model (placeholder)
+        run: |
+          echo "Deploying fraud detection model..."
+          echo "Add your deployment steps here (e.g., push to S3, deploy to server, etc.)"
