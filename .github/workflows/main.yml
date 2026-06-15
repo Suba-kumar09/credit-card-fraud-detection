@@ -20,9 +20,10 @@ jobs:
       - name: Upgrade pip
         run: python -m pip install --upgrade pip
 
-      - name: Remove Windows-only package
+      - name: Remove Windows-only packages
         run: |
           sed -i '/pywinpty/d' requirements.txt
+          cat requirements.txt
 
       - name: Install dependencies
         run: pip install -r requirements.txt
