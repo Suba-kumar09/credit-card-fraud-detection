@@ -1,4 +1,4 @@
-# Credit Card Fraud Detection 🔍
+# Credit Card Fraud Detection 
 
 ## Project Overview
 A Data Science project using Machine Learning to detect fraudulent credit card transactions using Python.
@@ -36,7 +36,7 @@ This project builds a classifier to detect fraud even with severely imbalanced d
 | XGBoost | 0.73 | 0.89 | 0.80 |
 
 ## Best Model
-✅ Random Forest with AUC = 0.969
+Random Forest with AUC = 0.969
 
 ## Key Findings
 - Dataset is highly imbalanced (0.17% fraud)
